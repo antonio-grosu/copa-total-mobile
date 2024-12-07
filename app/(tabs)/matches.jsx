@@ -20,19 +20,19 @@ const MatchesScreen = () => {
   const { selectedTournament } = useTournament();
 
   // proprietatile turneului selectat
-  const { name, slug, image, matches, id } = selectedTournament.item;
+  const { name, slug, image, matches, id } = selectedTournament.tournament;
 
   // caz in care nu exista turneu
   if (!selectedTournament) {
     return <Text>No Tournament Selected</Text>;
   }
+  // sortarea in ordine descrescatoare a meciurilor in functie de data
   matches.sort((a, b) => {
     // Convert dates from DD.MM.YYYY to YYYY-MM-DD for parsing
     const dateA = new Date(a.date.split(".").reverse().join("-"));
     const dateB = new Date(b.date.split(".").reverse().join("-"));
     return dateB - dateA; // Ascending order
   });
-
   return (
     <SafeAreaView className="h-full bg-gray-950 ">
       <FlatList
@@ -41,36 +41,79 @@ const MatchesScreen = () => {
         // render box ul cu meciul
         renderItem={(match) => {
           return (
-            <View
-              key={match.item.id}
-              className="w-full mt-12 rounded-md border-2 py-4 px-8 border-gray-100/30 h-32 flex-row"
-            >
-              <View className="flex-1 w-5/12 justify-center gap-4 ">
-                <Text className="text-white font-semibold">
-                  {match.item.team1}
-                </Text>
-                <Text className="text-white font-semibold">
-                  {match.item.team2}
-                </Text>
-              </View>
-              <View className="w-6/12  justify-end items-end">
-                <View className="flex-row gap-4   flex-1">
-                  <View className="flex-col items-center justify-center gap-4 border-r-2 px-4 border-gray-100/30">
-                    <Text className="text-white font-semibold text-lg">
-                      {match.item.score[0]}
-                    </Text>
-                    <Text className="text-white font-semibold text-lg">
-                      {match.item.score[1]}
+            <>
+              <Text className="text-white  mt-12 mb-2">{match.item.date}</Text>
+              <View
+                key={match.item.id}
+                className="w-full rounded-md border-2 py-4 px-8 border-gray-100/30 h-32 flex-row"
+              >
+                <View className="flex-1 w-5/12 justify-center gap-4 ">
+                  <View
+                    className={
+                      match.item.score[0] > match.item.score[1]
+                        ? "bg-green-300/10 rounded-md px-4 py-1 font-semibold text-lg"
+                        : `text-white/50 px-4 py-1 font-semibold text-lg`
+                    }
+                  >
+                    <Text
+                      className={
+                        match.item.score[0] > match.item.score[1]
+                          ? " text-white font-semibold text-lg"
+                          : `text-white/50 font-semibold text-lg`
+                      }
+                    >
+                      {match.item.team1}
                     </Text>
                   </View>
-                  <View className=" p-1 flex items-center justify-center ">
-                    <Text className="text-white font-semibold">
-                      {match.item.time}
+                  <View
+                    className={
+                      match.item.score[0] < match.item.score[1]
+                        ? "bg-green-300/10 rounded-md px-4 py-1 font-semibold text-lg"
+                        : `text-white/50  px-4 py-1 font-semibold text-lg`
+                    }
+                  >
+                    <Text
+                      className={
+                        match.item.score[0] < match.item.score[1]
+                          ? "text-white font-semibold text-lg"
+                          : `text-white/50 font-semibold text-lg`
+                      }
+                    >
+                      {match.item.team2}
                     </Text>
                   </View>
                 </View>
+                <View className="w-6/12  justify-end items-end">
+                  <View className="flex-row gap-4   flex-1">
+                    <View className="flex-col items-center justify-center gap-4 border-r-2 px-4 border-gray-100/30">
+                      <Text
+                        className={
+                          match.item.score[0] > match.item.score[1]
+                            ? "text-green-300 font-semibold text-lg"
+                            : `text-white/50 font-semibold text-lg`
+                        }
+                      >
+                        {match.item.score[0]}
+                      </Text>
+                      <Text
+                        className={
+                          match.item.score[0] < match.item.score[1]
+                            ? "text-green-300 font-semibold text-lg"
+                            : `text-white/50 font-semibold text-lg`
+                        }
+                      >
+                        {match.item.score[1]}
+                      </Text>
+                    </View>
+                    <View className=" p-1 flex items-center justify-center ">
+                      <Text className="text-white font-semibold">
+                        {match.item.time}
+                      </Text>
+                    </View>
+                  </View>
+                </View>
               </View>
-            </View>
+            </>
           );
         }}
         //render la componentele de deasupra meciurilor

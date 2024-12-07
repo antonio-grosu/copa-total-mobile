@@ -16,12 +16,16 @@ const Leaderboard = () => {
   const { selectedTournament } = useTournament();
 
   // proprietatile turneului selectat
-  const { name, slug, image, matches, id } = selectedTournament.item;
+  const { name, slug, image, matches, id } = selectedTournament.tournament;
 
   // caz in care nu exista turneu
   if (!selectedTournament) {
     return <Text>No Tournament Selected</Text>;
   }
+  const sortedTeams = selectedTournament.stats.sort(
+    (a, b) => b.points - a.points
+  );
+  console.log(sortedTeams);
   return (
     <SafeAreaView className="h-full bg-gray-950 ">
       <FlatList
