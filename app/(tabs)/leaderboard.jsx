@@ -25,7 +25,6 @@ const Leaderboard = () => {
   const sortedTeams = selectedTournament.stats.sort(
     (a, b) => b.points - a.points
   );
-  console.log(sortedTeams);
   return (
     <SafeAreaView className="h-full bg-gray-950 ">
       <FlatList

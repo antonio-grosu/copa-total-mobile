@@ -6,6 +6,9 @@ import primaryFootball from "../assets/images/primaryFootball.png";
 import primaryLeaderboard from "../assets/images/primaryLeaderboard.png";
 import primaryStats from "../assets/images/primaryStats.png";
 import tournamentPic1 from "../assets/images/tournamentPic1.png";
+import tournamentIcon from "../assets/images/tournament-icon.png";
+import championshipIcon from "../assets/images/championship-icon.png";
+
 export default {
   logo,
   football,
@@ -15,4 +18,6 @@ export default {
   primaryLeaderboard,
   primaryStats,
   tournamentPic1,
+  tournamentIcon,
+  championshipIcon,
 };
