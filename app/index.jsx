@@ -197,7 +197,6 @@ const indexScreen = () => {
             id: 1,
             type: 1,
             image: "../assets/images/tournamentPic1.png",
-            slug: "Test Turneu",
             matches: [
               {
                 team1: "FCSB",
@@ -242,7 +241,6 @@ const indexScreen = () => {
             id: 2,
             type: 2,
             image: "../assets/images/tournamentPic1.png",
-            slug: "turneu1",
             matches: {
               groups: [
                 [
@@ -267,7 +265,7 @@ const indexScreen = () => {
                   {
                     team1: "Dinamo",
                     team2: "Craiova",
-                    score: [2, 3],
+                    score: [2, 6],
                     result: 2,
                     date: "2.12.2024",
                     time: "22:00",

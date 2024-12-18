@@ -92,21 +92,21 @@ const MatchesScreen = () => {
                 </Text>
                 <View
                   key={match.item.id}
-                  className="w-full rounded-md border-2 py-4 px-8 border-orange-300/20 h-32 flex-row"
+                  className="w-full rounded-md border-2 py-4 px-8 border-gray-300/10 h-32 flex-row"
                 >
                   <View className="flex-1 w-5/12 justify-center gap-4 ">
                     <View
                       className={
                         match.item.score[0] > match.item.score[1]
-                          ? "bg-green-300/10 rounded-md px-4 py-1 font-semibold text-lg"
-                          : `text-white/50 px-4 py-1 font-semibold text-lg`
+                          ? "bg-green-300/40 rounded-md px-4 py-1 font-semibold text-lg"
+                          : `text-white px-4 py-1  text-lg`
                       }
                     >
                       <Text
                         className={
                           match.item.score[0] > match.item.score[1]
                             ? " text-white font-semibold text-lg"
-                            : `text-white/50 font-semibold text-lg`
+                            : `text-white text-lg`
                         }
                       >
                         {match.item.team1}
@@ -115,15 +115,15 @@ const MatchesScreen = () => {
                     <View
                       className={
                         match.item.score[0] < match.item.score[1]
-                          ? "bg-green-300/10 rounded-md px-4 py-1 font-semibold text-lg"
-                          : `text-white/50  px-4 py-1 font-semibold text-lg`
+                          ? "bg-green-300/40 rounded-md px-4 py-1 font-semibold text-lg"
+                          : `text-white  px-4 py-1  text-lg`
                       }
                     >
                       <Text
                         className={
                           match.item.score[0] < match.item.score[1]
                             ? "text-white font-semibold text-lg"
-                            : `text-white/50 font-semibold text-lg`
+                            : `text-white  text-lg`
                         }
                       >
                         {match.item.team2}
@@ -217,21 +217,21 @@ const MatchesScreen = () => {
               {/* cardul de meci */}
               <View
                 key={match.id}
-                className="w-full rounded-md border-2 py-4 px-8 border-orange-300/20 h-32 flex-row"
+                className="w-full rounded-md border-2 py-4 px-8 border-gray-300/10 h-32 flex-row"
               >
                 <View className="flex-1 w-5/12 justify-center gap-4">
                   <View
                     className={
                       match.score[0] > match.score[1]
-                        ? "bg-green-300/10 rounded-md px-4 py-1 font-semibold text-lg"
-                        : `text-white/50 px-4 py-1 font-semibold text-lg`
+                        ? "bg-green-300/40 rounded-md px-4 py-1 font-semibold text-lg"
+                        : `text-white px-4 py-1  text-lg`
                     }
                   >
                     <Text
                       className={
                         match.score[0] > match.score[1]
-                          ? "text-white font-semibold text-lg"
-                          : `text-white/50 font-semibold text-lg`
+                          ? "text-white font-bold text-lg"
+                          : `text-white  text-lg`
                       }
                     >
                       {match.team1}
@@ -240,15 +240,15 @@ const MatchesScreen = () => {
                   <View
                     className={
                       match.score[0] < match.score[1]
-                        ? "bg-green-300/10 rounded-md px-4 py-1 font-semibold text-lg"
-                        : `text-white/50 px-4 py-1 font-semibold text-lg`
+                        ? "bg-green-300/40 rounded-md px-4 py-1 font-semibold text-lg"
+                        : `text-white px-4 py-1  text-lg`
                     }
                   >
                     <Text
                       className={
                         match.score[0] < match.score[1]
-                          ? "text-white font-semibold text-lg"
-                          : `text-white/50 font-semibold text-lg`
+                          ? "text-white font-bold text-lg"
+                          : `text-white  text-lg`
                       }
                     >
                       {match.team2}
