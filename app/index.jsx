@@ -7,9 +7,29 @@ import * as Animatable from "react-native-animatable";
 import { Link, router } from "expo-router";
 import { useTournament } from "./TournamentContextProvider";
 import { ImageBackground } from "expo-image";
+import { useEffect, useState } from "react";
 
 const indexScreen = () => {
   const { setSelectedTournament } = useTournament();
+  const [tournaments, setTournaments] = useState([]);
+  const [championships, setChampionships] = useState([]);
+
+  // functie de get pentru turnee si campionate
+  useEffect(() => {
+    fetch("http://localhost:3000/tournaments")
+      .then((response) => response.json())
+      .then((data) => {
+        setTournaments(data);
+      });
+    fetch("http://localhost:3000/championships")
+      .then((response) => response.json())
+      .then((data) => {
+        setChampionships(data);
+      });
+  }, []);
+
+  console.log(tournaments, championships);
+  const eventsArr = [...tournaments, ...championships];
   // fuctie pentru click pe element
   const handleTournamentPress = (item) => {
     // CREAREA DE STATS in mod eficient pentru CAMPIONAT type=1
@@ -191,141 +211,8 @@ const indexScreen = () => {
   return (
     <SafeAreaView className="h-screen flex-1 px-4 bg-gray-950">
       <FlatList
-        data={[
-          {
-            name: "Championship Test",
-            id: 1,
-            type: 1,
-            image: "../assets/images/tournamentPic1.png",
-            matches: [
-              {
-                team1: "FCSB",
-                team2: "Dinamo",
-                score: [1, 1],
-                result: 0,
-                date: "5.12.2024",
-                time: "18:00",
-                id: 1,
-              },
-              {
-                team1: "FCSB",
-                team2: "CFR Cluj",
-                score: [3, 0],
-                result: 1,
-                date: "3.12.2024",
-                time: "15:00",
-                id: 2,
-              },
-              {
-                team1: "Dinamo",
-                team2: "Craiova",
-                score: [2, 3],
-                result: 2,
-                date: "2.12.2024",
-                time: "22:00",
-                id: 3,
-              },
-              {
-                team1: "FCSB",
-                team2: "Craiova",
-                score: [1, 2],
-                result: 2,
-                date: "19.1.2024",
-                time: "21:00",
-                id: 4,
-              },
-            ],
-          },
-          {
-            name: "Tournament Test",
-            id: 2,
-            type: 2,
-            image: "../assets/images/tournamentPic1.png",
-            matches: {
-              groups: [
-                [
-                  {
-                    team1: "FCSB",
-                    team2: "Dinamo",
-                    score: [1, 1],
-                    result: 0,
-                    date: "5.12.2024",
-                    time: "18:00",
-                    id: 1,
-                  },
-                  {
-                    team1: "FCSB",
-                    team2: "CFR Cluj",
-                    score: [3, 0],
-                    result: 1,
-                    date: "3.12.2024",
-                    time: "15:00",
-                    id: 2,
-                  },
-                  {
-                    team1: "Dinamo",
-                    team2: "Craiova",
-                    score: [2, 6],
-                    result: 2,
-                    date: "2.12.2024",
-                    time: "22:00",
-                    id: 3,
-                  },
-                  {
-                    team1: "FCSB",
-                    team2: "Craiova",
-                    score: [1, 2],
-                    result: 2,
-                    date: "19.1.2024",
-                    time: "21:00",
-                    id: 4,
-                  },
-                ],
-                [
-                  {
-                    team1: "FC Barcelona",
-                    team2: "Real Madrid",
-                    score: [1, 1],
-                    result: 0,
-                    date: "5.12.2024",
-                    time: "18:00",
-                    id: 1,
-                  },
-                  {
-                    team1: "Real Madrid",
-                    team2: "Atletico Madrid",
-                    score: [3, 0],
-                    result: 1,
-                    date: "3.12.2024",
-                    time: "15:00",
-                    id: 2,
-                  },
-                  {
-                    team1: "FC Barcelona",
-                    team2: "Atletico Madrid",
-                    score: [2, 3],
-                    result: 2,
-                    date: "2.12.2024",
-                    time: "22:00",
-                    id: 3,
-                  },
-                  {
-                    team1: "Atletico Bilbao",
-                    team2: "FC Barcelona",
-                    score: [1, 2],
-                    result: 2,
-                    date: "19.1.2024",
-                    time: "21:00",
-                    id: 4,
-                  },
-                ],
-              ],
-              semifinals: [],
-              finals: [],
-            },
-          },
-        ]}
-        keyExtractor={(item) => item.id.toString()}
+        data={eventsArr}
+        keyExtractor={(item) => item._id.toString()}
         renderItem={(item) => {
           return (
             <TouchableOpacity
