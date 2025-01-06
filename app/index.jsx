@@ -28,7 +28,7 @@ const indexScreen = () => {
       });
   }, []);
 
-  console.log(tournaments, championships);
+  // console.log(tournaments, championships);
   const eventsArr = [...tournaments, ...championships];
   // fuctie pentru click pe element
   const handleTournamentPress = (item) => {
@@ -54,6 +54,8 @@ const indexScreen = () => {
         let draws = 0;
         let goalsGiven = 0;
         let goalsReceived = 0;
+        let yellow_cards = 0;
+        let red_cards = 0;
 
         // resultatul este fie :
         //1 -> win echipa 1
@@ -67,6 +69,8 @@ const indexScreen = () => {
           if (matchesArr[i].team1 === item) {
             goalsGiven += matchesArr[i].score[0];
             goalsReceived += matchesArr[i].score[1];
+            yellow_cards += matchesArr[i].cards_1.yellow;
+            red_cards += matchesArr[i].cards_1.red;
             if (matchesArr[i].result == 1) {
               points += 3;
               wins += 1;
@@ -82,6 +86,8 @@ const indexScreen = () => {
           if (matchesArr[i].team2 === item) {
             goalsGiven += matchesArr[i].score[1];
             goalsReceived += matchesArr[i].score[0];
+            yellow_cards += matchesArr[i].cards_2.yellow;
+            red_cards += matchesArr[i].cards_2.red;
             if (matchesArr[i].result == 2) {
               points += 3;
               wins += 1;
@@ -103,6 +109,9 @@ const indexScreen = () => {
         teamResult.losses = losses;
         teamResult.goalsGiven = goalsGiven;
         teamResult.goalsReceived = goalsReceived;
+        teamResult.yellow_cards = yellow_cards;
+        teamResult.red_cards = red_cards;
+
         if (teamResult) {
           teamsStatsArr.push(teamResult);
         }
@@ -146,6 +155,8 @@ const indexScreen = () => {
           let draws = 0;
           let goalsGiven = 0;
           let goalsReceived = 0;
+          let yellow_cards = 0;
+          let red_cards = 0;
           groups.map((group) => {
             // iterez prin array ul de grupe
             for (let i = 0; i < group.length; i += 1) {
@@ -155,6 +166,8 @@ const indexScreen = () => {
                 //cazul 1 in care echipa care a castigat este 1
                 goalsReceived += group[i].score[1];
                 goalsGiven += group[i].score[0];
+                yellow_cards += group[i].cards_1.yellow;
+                red_cards += group[i].cards_1.red;
                 if (group[i].result == 1) {
                   wins += 1;
                   points += 3;
@@ -170,6 +183,9 @@ const indexScreen = () => {
               if (group[i].team2 === team) {
                 goalsGiven += group[i].score[1];
                 goalsReceived += group[i].score[0];
+                yellow_cards += group[i].cards_2.yellow;
+                red_cards += group[i].cards_2.red;
+
                 if (group[i].result == 2) {
                   points += 3;
                   wins += 1;
@@ -191,6 +207,8 @@ const indexScreen = () => {
           teamResult.losses = losses;
           teamResult.goalsGiven = goalsGiven;
           teamResult.goalsReceived = goalsReceived;
+          teamResult.yellow_cards = yellow_cards;
+          teamResult.red_cards = red_cards;
           if (teamResult) {
             // se adauga stats-urile echipei in arrayul corespunzator grupei
             currentGroupStats.push(teamResult);

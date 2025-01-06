@@ -28,7 +28,9 @@ const MatchesScreen = () => {
   }
   const { name, slug, image, matches, id, type } =
     selectedTournament.information;
-  let groups = matches.groups ? matches.groups : [];
+  let groups = selectedTournament.information.matches
+    ? selectedTournament.information.matches
+    : [];
   if (type === 1) {
     // proprietatile turneului selectat
 
@@ -39,7 +41,11 @@ const MatchesScreen = () => {
       const dateB = new Date(b.date.split(".").reverse().join("-"));
       return dateB - dateA; // Ascending order
     });
-  } else if (type == 2) {
+  }
+  if (type == 2) {
+    groups = selectedTournament.information.matches.groups
+      ? selectedTournament.information.matches.groups
+      : [];
     groups.map((group) => {
       group.sort((a, b) => {
         // Convert dates from DD.MM.YYYY to YYYY-MM-DD for parsing
@@ -48,8 +54,8 @@ const MatchesScreen = () => {
         return dateB - dateA; // Ascending order
       });
     });
+    console.log(groups);
   }
-
   // functie de share
   const onShare = async () => {
     try {
@@ -92,7 +98,7 @@ const MatchesScreen = () => {
                 </Text>
                 <View
                   key={match.item.id}
-                  className="w-full rounded-md border-2 py-4 px-8 border-gray-300/10 h-32 flex-row"
+                  className="w-full rounded-md border-2 py-4 px-8 border-gray-300/10 h-40 flex-row"
                 >
                   <View className="flex-1 w-5/12 justify-center gap-4 ">
                     <View
@@ -112,6 +118,7 @@ const MatchesScreen = () => {
                         {match.item.team1}
                       </Text>
                     </View>
+
                     <View
                       className={
                         match.item.score[0] < match.item.score[1]

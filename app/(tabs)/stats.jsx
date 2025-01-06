@@ -32,6 +32,9 @@ const Stats = () => {
   let maxNumberOfGoalsTeam = 0;
   let teamWithMostGoals = "";
   let tournamentStats = [];
+  let numberOfYellowCards = 0;
+  let numberOfRedCards = 0;
+  console.log(selectedTournament.stats.groups);
   if (type == 1) {
     for (let i = 0; i < matches.length; i++) {
       numberOfMatchesPlayed =
@@ -51,6 +54,10 @@ const Stats = () => {
         teamWithMostGoals = selectedTournament.stats[i].name;
       }
     }
+    for (let i = 0; i < selectedTournament.stats.length; i += 1) {
+      numberOfYellowCards += selectedTournament.stats[i].yellow_cards;
+      numberOfRedCards += selectedTournament.stats[i].red_cards;
+    }
   } else {
     selectedTournament.stats.groups.map((group) => {
       let currentStats = new Object();
@@ -58,6 +65,8 @@ const Stats = () => {
       currentStats.numberOfGoals = 0;
       currentStats.maxNumberOfGoalsTeam = 0;
       currentStats.teamWithMostGoals = "";
+      currentStats.numberOfYellowCards = 0;
+      currentStats.numberOfRedCards = 0;
       for (let i = 0; i < group.length; i += 1) {
         currentStats.numberOfGoals += group[i].goalsGiven;
       }
@@ -69,6 +78,10 @@ const Stats = () => {
         if (currentStats.maxNumberOfGoalsTeam == group[i].goalsGiven) {
           currentStats.teamWithMostGoals = group[i].name;
         }
+      }
+      for (let i = 0; i < group.length; i += 1) {
+        currentStats.numberOfYellowCards += group[i].yellow_cards;
+        currentStats.numberOfYellowCards += group[i].yellow_cards;
       }
       tournamentStats.push(currentStats);
     });
@@ -163,13 +176,13 @@ const Stats = () => {
           <View className="w-full mt-4 py-4 bg-gray-500/10 flex items-center justify-center gap-2 rounded-md flex-row">
             <View className="px-2 py-4 bg-yellow-400 rounded-sm"></View>
             <Text className="font-semibold text-2xl  text-orange-300">
-              No.{" "}
+              {numberOfYellowCards}{" "}
             </Text>
           </View>
           <View className="w-full mt-4 py-4 bg-gray-500/10 flex items-center justify-center gap-2 rounded-md flex-row">
             <View className="px-2 py-4 bg-red-500 rounded-sm"></View>
             <Text className="font-semibold text-2xl  text-orange-300">
-              No.{" "}
+              {numberOfRedCards}{" "}
             </Text>
           </View>
         </ScrollView>
@@ -219,13 +232,13 @@ const Stats = () => {
               <View className="w-full mt-4 py-4 bg-gray-500/10 flex items-center justify-center gap-2 rounded-md flex-row">
                 <View className="px-2 py-4 bg-yellow-500 rounded-sm"></View>
                 <Text className="font-semibold text-2xl  text-orange-300">
-                  No.{" "}
+                  {item.numberOfYellowCards}{" "}
                 </Text>
               </View>
               <View className="w-full mt-4 py-4 bg-gray-500/10 flex items-center justify-center gap-2 rounded-md flex-row">
                 <View className="px-2 py-4 bg-red-500 rounded-sm"></View>
                 <Text className="font-semibold text-2xl  text-orange-300">
-                  No.{" "}
+                  {item.numberOfRedCards}{" "}
                 </Text>
               </View>
             </View>
