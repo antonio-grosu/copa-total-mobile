@@ -217,10 +217,95 @@ const indexScreen = () => {
         // se adauga in array ul final, array ul de stats uri ale fiecarei echipe din toate grupele
         groupsStatsArr.push(currentGroupStats);
       });
+      let semifinals = item.item.matches.semifinals;
+      let semifinalsTeams = [];
+      let semifinalsStatsArr = [];
+      // crearea listei de echipe
+      for (let i = 0; i < semifinals.length; i += 1) {
+        //verificare pt fiecare din fieldurile team1 si team2
+        if (!semifinalsTeams.includes(semifinals[i].team1))
+          semifinalsTeams.push(semifinals[i].team1);
+        if (!semifinalsTeams.includes(semifinals[i].team2))
+          semifinalsTeams.push(semifinals[i].team2);
+      }
+      // stats-urile fiecarei echipe din semifinale
+      semifinalsTeams.map((item) => {
+        let points = 0;
+        let wins = 0;
+        let losses = 0;
+
+        let goalsGiven = 0;
+        let goalsReceived = 0;
+        let yellow_cards = 0;
+        let red_cards = 0;
+
+        // resultatul este fie :
+        //1 -> win echipa 1
+        //2 -> win echipa 2
+        //0 -> draw
+        //null -> meciul nu a avut loc
+
+        // adaugarea de puncte in  functie de echipa castigatoare
+        for (let i = 0; i < semifinals.length; i += 1) {
+          //cazul 1 in care echipa care a castigat este 1
+          if (semifinals[i].team1 === item) {
+            goalsGiven += semifinals[i].score[0];
+            goalsReceived += semifinals[i].score[1];
+            yellow_cards += semifinals[i].cards_1.yellow;
+            red_cards += semifinals[i].cards_1.red;
+            if (semifinals[i].result == 1) {
+              points += 3;
+              wins += 1;
+            } else if (semifinals[i].result == 0) {
+              points += 1;
+            } else {
+              points = points;
+              losses += 1;
+            }
+          }
+          // cazul 2 in care echipa care a castigat este 2
+          if (semifinals[i].team2 === item) {
+            goalsGiven += semifinals[i].score[1];
+            goalsReceived += semifinals[i].score[0];
+            yellow_cards += semifinals[i].cards_2.yellow;
+            red_cards += semifinals[i].cards_2.red;
+            if (semifinals[i].result == 2) {
+              points += 3;
+              wins += 1;
+            } else if (semifinals[i].result == 0) {
+              points += 1;
+            } else {
+              points = points;
+              losses += 1;
+            }
+          }
+        }
+
+        // se creeaza obiectul care retine echipa si nr de puncte
+        const teamResult = new Object();
+        teamResult.name = item;
+        teamResult.points = points;
+        teamResult.wins = wins;
+        teamResult.losses = losses;
+        teamResult.goalsGiven = goalsGiven;
+        teamResult.goalsReceived = goalsReceived;
+        teamResult.yellow_cards = yellow_cards;
+        teamResult.red_cards = red_cards;
+
+        if (teamResult) {
+          semifinalsStatsArr.push(teamResult);
+        }
+      });
+
+      let finals = item.item.matches.finals;
 
       setSelectedTournament({
         information: item.item,
-        stats: { groups: groupsStatsArr },
+        stats: {
+          groups: groupsStatsArr,
+          semifinals: semifinalsStatsArr,
+          finals: finals,
+        },
       });
     }
 
@@ -253,7 +338,6 @@ const indexScreen = () => {
                 <Text className="text-xl text-white font-semibold">
                   {item.item.name}
                 </Text>
-                <Text className="text-white">No. teams </Text>
               </View>
             </TouchableOpacity>
           );

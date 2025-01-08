@@ -34,7 +34,6 @@ const Stats = () => {
   let tournamentStats = [];
   let numberOfYellowCards = 0;
   let numberOfRedCards = 0;
-  console.log(selectedTournament.stats.groups);
   if (type == 1) {
     for (let i = 0; i < matches.length; i++) {
       numberOfMatchesPlayed =
@@ -86,7 +85,6 @@ const Stats = () => {
       tournamentStats.push(currentStats);
     });
   }
-
   // functie de share
   const onShare = async () => {
     try {
@@ -142,14 +140,7 @@ const Stats = () => {
             {name} Statistics
           </Text>
           <View className="w-1/2 pt-1 rounded-full bg-orange-300 mt-3"></View>
-          <View className="mt-12 w-full bg-gray-500/10 p-12 rounded-md flex items-center justify-center">
-            <Text className="text-white  text-xl ">
-              <Text className="font-semibold text-2xl text-orange-300">
-                {numberOfMatchesPlayed}
-              </Text>{" "}
-              Games played
-            </Text>
-          </View>
+          <View className="mt-12 w-full bg-gray-500/10 p-12 rounded-md flex items-center justify-center"></View>
           <View className="flex items-center mt-4 justify-between gap-4 w-full flex-row">
             <View className="w-4/12 p-4 bg-gray-500/10 rounded-md items-center">
               <Text className="text-md text-white">Total Goals</Text>
@@ -191,6 +182,7 @@ const Stats = () => {
       {type === 2 && (
         <SectionList
           className="px-4"
+          stickySectionHeadersEnabled={false}
           sections={tournamentStats.map((stats, index) => ({
             title: `Group ${index + 1}`,
             data: [stats],
@@ -198,12 +190,6 @@ const Stats = () => {
           keyExtractor={(item, index) => index.toString()}
           renderItem={({ item }) => (
             <View className="mt-4 w-full bg-gray-500/10 p-12 rounded-md flex items-center justify-center">
-              <Text className="text-white text-xl">
-                <Text className="font-semibold text-2xl text-orange-300">
-                  {item.numberOfMatchesPlayed}
-                </Text>{" "}
-                Games played
-              </Text>
               <View className="flex items-center mt-4 justify-between gap-4 w-full flex-row">
                 <View className="w-4/12 p-4 bg-gray-500/10 rounded-md items-center">
                   <Text className="text-md text-white">Total Goals</Text>
@@ -275,6 +261,60 @@ const Stats = () => {
                 {name} Statistics
               </Text>
               <View className="w-1/2 pt-1 rounded-full bg-orange-300 mt-3"></View>
+
+              {selectedTournament.stats.finals &&
+                selectedTournament.stats.finals[0].score && (
+                  <>
+                    <Text className="text-2xl mt-16 font-semibold  text-white">
+                      Finals
+                    </Text>
+                    <View className="mt-4 w-full bg-gray-500/10 p-12 rounded-md flex items-center justify-center">
+                      <Text className="text-white font-semibold text-2xl">
+                        Winner of the tournament
+                      </Text>
+                      {selectedTournament.stats.finals[0].result === 1 && (
+                        <Text className="text-orange-300 text-2xl mt-2 font-semibold">
+                          {selectedTournament.stats.finals[0].team1}{" "}
+                        </Text>
+                      )}
+                      {selectedTournament.stats.finals[0].result === 2 && (
+                        <Text className="text-orange-300">
+                          {selectedTournament.stats.finals[0].team2}{" "}
+                        </Text>
+                      )}
+                    </View>
+                  </>
+                )}
+              {selectedTournament.stats.semifinals && (
+                <View>
+                  <Text className="text-2xl mt-16 font-semibold  text-white">
+                    Semifinals
+                  </Text>
+                  {selectedTournament.stats.semifinals &&
+                    selectedTournament.stats.semifinals
+                      .sort((a, b) => a.points - b.points)
+                      .map((team, index) => (
+                        <View
+                          key={index}
+                          className="mt-4 w-full bg-gray-500/10 p-12 rounded-md flex items-center justify-center"
+                        >
+                          <Text className="text-white text-xl">
+                            <Text className="font-semibold text-2xl text-orange-300">
+                              {team.name}
+                            </Text>{" "}
+                            {team.points === 3 &&
+                              team.wins === 1 &&
+                              team.losses === 0 &&
+                              "qualified for the finals"}
+                            {team.points === 3 &&
+                              team.losses === 1 &&
+                              "made it third place"}
+                            {team.points === 0 && "made it fourth place"}
+                          </Text>
+                        </View>
+                      ))}
+                </View>
+              )}
             </>
           )}
         />

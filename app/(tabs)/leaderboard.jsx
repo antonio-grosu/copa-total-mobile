@@ -14,6 +14,7 @@ import { Link } from "expo-router";
 import images from "../../constants/images";
 import { Share } from "react-native";
 import { useEffect, useState } from "react";
+import { FlipOutXDown } from "react-native-reanimated";
 
 const Leaderboard = () => {
   // global context unde este salvat turneul pe care se apasa in index
@@ -34,11 +35,16 @@ const Leaderboard = () => {
       (a, b) => b.points - a.points
     );
   } else if (type === 2) {
-    const sortedTeams = selectedTournament.stats.groups.map((group) =>
+    const sortedTeamsGroups = selectedTournament.stats.groups.map((group) =>
       group.sort((a, b) => b.points - a.points)
     );
+    let sortedTeamsSemifinals = selectedTournament.stats.semifinals.sort(
+      (a, b) => b.points - a.points
+    );
+    sortedTeamsSemifinals = sortedTeamsSemifinals.sort(
+      (a, b) => b.gamesPlayed - a.gamesPlayed
+    );
   }
-
   // functie de share
   const onShare = async () => {
     try {
@@ -184,8 +190,65 @@ const Leaderboard = () => {
               <Text className="text-3xl font-semibold text-white mt-24">
                 {name} Matches
               </Text>
-
               <View className="w-1/2 pt-1 rounded-full bg-orange-300 mt-3" />
+              {/* componenta de afisare a leaderboardului  din finala */}
+              {teamsStats.finals && (
+                <Text className="mt-12 font-semibold text-2xl mb-4 text-white">
+                  Finals
+                </Text>
+              )}
+              {teamsStats.finals && teamsStats.finals[0].result && (
+                <>
+                  <View className="w-full h-20 relative flex flex-row items-center justify-center">
+                    <Image
+                      source={require("../../assets/images/trophy.png")}
+                      resizeMode="contain"
+                      className="h-16 w-16"
+                    />
+                    <View className=" flex flex-row items-center justify-center">
+                      <Text className="text-white text-2xl font-semibold">
+                        {teamsStats.finals[0].result === 1
+                          ? teamsStats.finals[0].team1
+                          : teamsStats.finals[0].team2}
+                      </Text>
+                    </View>
+                  </View>
+                  <Text className="text-white  mx-auto mt-4">
+                    2.{" "}
+                    {teamsStats.finals[0].result === 1
+                      ? teamsStats.finals[0].team2
+                      : teamsStats.finals[0].team1}
+                  </Text>
+                  <Text className="text-white  mx-auto mt-4">
+                    3. {teamsStats.semifinals[2].name}
+                  </Text>
+                  <Text className="text-white  mx-auto mt-4">
+                    4. {teamsStats.semifinals[3].name}
+                  </Text>
+                </>
+              )}
+
+              {/* componenta de afisare a leaderboardului  din semifinale */}
+              {teamsStats.semifinals && (
+                <Text className="mt-12 font-semibold text-2xl mb-4 text-white">
+                  Semifinals
+                </Text>
+              )}
+              {teamsStats.semifinals &&
+                teamsStats.semifinals.map((team, index) => (
+                  <View
+                    key={index}
+                    className="flex justify-center flex-row items-center gap-2 text-lg "
+                  >
+                    {index < 2 && (
+                      <Text className="text-green-300 mb-2">Finalist</Text>
+                    )}
+                    {index >= 2 && (
+                      <Text className="text-red-500 mb-2">Lost Semifinals</Text>
+                    )}
+                    <Text className="text-white mb-2">{team.name}</Text>
+                  </View>
+                ))}
             </View>
           )}
           stickySectionHeadersEnabled={false} // Disable sticky headers

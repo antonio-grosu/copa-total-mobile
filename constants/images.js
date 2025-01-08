@@ -8,6 +8,7 @@ import primaryStats from "../assets/images/primaryStats.png";
 import tournamentPic1 from "../assets/images/tournamentPic1.png";
 import tournamentIcon from "../assets/images/tournament-icon.png";
 import championshipIcon from "../assets/images/championship-icon.png";
+import trophy from "../assets/images/trophy.png";
 
 export default {
   logo,
@@ -20,4 +21,5 @@ export default {
   tournamentPic1,
   tournamentIcon,
   championshipIcon,
+  trophy,
 };
