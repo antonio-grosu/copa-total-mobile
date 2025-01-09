@@ -31,12 +31,32 @@ const Leaderboard = () => {
     return <Text>No Tournament Selected</Text>;
   }
   if (type === 1) {
-    const sortedTeams = selectedTournament.stats.sort(
-      (a, b) => b.points - a.points
-    );
+    let sortedTeams = selectedTournament.stats.sort((a, b) => {
+      if (b.points === a.points) {
+        let golAverajA = a.goalsReceived
+          ? a.goalsGiven / a.goalsReceived
+          : a.goalsGiven;
+        let golAverajB = b.goalsReceived
+          ? b.goalsGiven / b.goalsReceived
+          : b.goalsGiven;
+        return golAverajB - golAverajA;
+      }
+      return b.points - a.points;
+    });
   } else if (type === 2) {
     const sortedTeamsGroups = selectedTournament.stats.groups.map((group) =>
-      group.sort((a, b) => b.points - a.points)
+      group.sort((a, b) => {
+        if (b.points === a.points) {
+          let golAverajA = a.goalsReceived
+            ? a.goalsGiven / a.goalsReceived
+            : a.goalsGiven;
+          let golAverajB = b.goalsReceived
+            ? b.goalsGiven / b.goalsReceived
+            : b.goalsGiven;
+          return golAverajB - golAverajA;
+        }
+        return b.points - a.points;
+      })
     );
     let sortedTeamsSemifinals = selectedTournament.stats.semifinals.sort(
       (a, b) => b.points - a.points
@@ -73,6 +93,7 @@ const Leaderboard = () => {
 
   return (
     <SafeAreaView className="h-full bg-gray-950 ">
+      {/* componenta pentru campionat */}
       {type == 1 && (
         <FlatList
           className="px-4"
@@ -95,10 +116,10 @@ const Leaderboard = () => {
                     {team.item.name}
                   </Text>
                 </View>
-                <View className="flex items-center flex-row gap-4 w-5/12 justify-between">
+                <View className="flex items-center flex-row gap-4 w-6/12 justify-between">
                   {/* nr de meciuri jucate */}
                   <Text className="text-white text-lg">
-                    {team.item.wins + (team.item.points % 3)}
+                    {team.item.wins + team.item.losses}
                   </Text>
                   {/* nr de meciuri castigate */}
                   <Text className="text-white text-lg">{team.item.wins}</Text>
@@ -111,7 +132,11 @@ const Leaderboard = () => {
                   {/* nr de puncte */}
                   <Text className="text-white text-lg">{team.item.points}</Text>
                   {/* nr de puncte */}
-                  <Text className="text-white text-lg">{team.item.points}</Text>
+                  <Text className="text-white text-lg">
+                    {team.item.goalsReceived
+                      ? team.item.goalsGiven / team.item.goalsReceived
+                      : team.item.goalsGiven}
+                  </Text>
                 </View>
               </View>
             );
@@ -149,7 +174,7 @@ const Leaderboard = () => {
                   <Text className="text-white text-xl font-semibold">#</Text>
                   <Text className="text-white text-xl font-semibold">Team</Text>
                 </View>
-                <View className="flex items-center w-5/12 flex-row gap-4">
+                <View className="flex justify-between items-center w-6/12 flex-row gap-4">
                   <Text className="text-white text-xl font-semibold">P</Text>
                   <Text className="text-white text-xl font-semibold">W</Text>
                   <Text className="text-white text-xl font-semibold">D</Text>
@@ -162,6 +187,8 @@ const Leaderboard = () => {
           )}
         ></FlatList>
       )}
+      {/* componenta pentru turneu */}
+
       {type === 2 && (
         <SectionList
           className="px-4"
@@ -188,16 +215,19 @@ const Leaderboard = () => {
                 </View>
               </ImageBackground>
               <Text className="text-3xl font-semibold text-white mt-24">
-                {name} Matches
+                {name} Leaderboard
               </Text>
               <View className="w-1/2 pt-1 rounded-full bg-orange-300 mt-3" />
               {/* componenta de afisare a leaderboardului  din finala */}
-              {teamsStats.finals && (
+              {teamsStats.finals.length > 0 && (
                 <Text className="mt-12 font-semibold text-2xl mb-4 text-white">
                   Finals
                 </Text>
               )}
-              {teamsStats.finals && teamsStats.finals[0].result && (
+              {teamsStats.finals.length > 0 && !teamsStats.finals[0].result && (
+                <Text className="text-white  mx-auto mt-4">Not Played</Text>
+              )}
+              {teamsStats.finals.length > 0 && teamsStats.finals[0].result && (
                 <>
                   <View className="w-full h-20 relative flex flex-row items-center justify-center">
                     <Image
@@ -219,36 +249,43 @@ const Leaderboard = () => {
                       ? teamsStats.finals[0].team2
                       : teamsStats.finals[0].team1}
                   </Text>
-                  <Text className="text-white  mx-auto mt-4">
-                    3. {teamsStats.semifinals[2].name}
-                  </Text>
-                  <Text className="text-white  mx-auto mt-4">
-                    4. {teamsStats.semifinals[3].name}
-                  </Text>
                 </>
               )}
 
               {/* componenta de afisare a leaderboardului  din semifinale */}
-              {teamsStats.semifinals && (
+              {teamsStats.semifinals.length > 0 && (
                 <Text className="mt-12 font-semibold text-2xl mb-4 text-white">
                   Semifinals
                 </Text>
               )}
-              {teamsStats.semifinals &&
-                teamsStats.semifinals.map((team, index) => (
-                  <View
-                    key={index}
-                    className="flex justify-center flex-row items-center gap-2 text-lg "
-                  >
-                    {index < 2 && (
-                      <Text className="text-green-300 mb-2">Finalist</Text>
-                    )}
-                    {index >= 2 && (
-                      <Text className="text-red-500 mb-2">Lost Semifinals</Text>
-                    )}
-                    <Text className="text-white mb-2">{team.name}</Text>
-                  </View>
-                ))}
+              {teamsStats.semifinals.length > 0 &&
+                teamsStats.semifinals.map((team, index) => {
+                  return (
+                    <View
+                      key={index}
+                      className="flex justify-center flex-row items-center  gap-2 text-lg "
+                    >
+                      {team.wins == 1 && (
+                        <Text className="text-green-300 mb-2 w-3/12 text-right ">
+                          Qualified
+                        </Text>
+                      )}
+                      {team.losses > 0 && (
+                        <Text className="text-red-500 mb-2 w-3/12 text-right ">
+                          Lost Semifinals
+                        </Text>
+                      )}
+                      {team.wins == 0 && team.losses == 0 && (
+                        <Text className="text-gray-500 mb-2 w-3/12 text-right ">
+                          Not Played
+                        </Text>
+                      )}
+                      <Text className="text-white font-semibold text-lg mb-2 w-3/12 text-left">
+                        {team.name}
+                      </Text>
+                    </View>
+                  );
+                })}
             </View>
           )}
           stickySectionHeadersEnabled={false} // Disable sticky headers
@@ -269,7 +306,7 @@ const Leaderboard = () => {
                   <Text className="text-white text-xl font-semibold">#</Text>
                   <Text className="text-white text-xl font-semibold">Team</Text>
                 </View>
-                <View className="flex items-center w-5/12 flex-row gap-4">
+                <View className="flex justify-between items-center w-6/12 flex-row gap-4">
                   <Text className="text-white text-xl font-semibold">P</Text>
                   <Text className="text-white text-xl font-semibold">W</Text>
                   <Text className="text-white text-xl font-semibold">D</Text>
@@ -297,10 +334,10 @@ const Leaderboard = () => {
                     {team.item.name}
                   </Text>
                 </View>
-                <View className="flex items-center flex-row gap-4 w-5/12 justify-between">
+                <View className="flex items-center flex-row gap-4 w-6/12 justify-between">
                   {/* nr de meciuri jucate */}
                   <Text className="text-white text-lg">
-                    {team.item.wins + (team.item.points % 3)}
+                    {team.item.wins + team.item.losses}
                   </Text>
                   {/* nr de meciuri castigate */}
                   <Text className="text-white text-lg">{team.item.wins}</Text>
@@ -313,7 +350,11 @@ const Leaderboard = () => {
                   {/* nr de puncte */}
                   <Text className="text-white text-lg">{team.item.points}</Text>
                   {/* nr de puncte */}
-                  <Text className="text-white text-lg">{team.item.points}</Text>
+                  <Text className="text-white text-lg">
+                    {team.item.goalsReceived
+                      ? team.item.goalsGiven / team.item.goalsReceived
+                      : team.item.goalsGiven}
+                  </Text>
                 </View>
               </View>
             );

@@ -113,6 +113,7 @@ const Stats = () => {
 
   return (
     <SafeAreaView className="h-full bg-gray-950  ">
+      {/* componenta pentru campionat */}
       {type === 1 && (
         <ScrollView className="px-4">
           <View className="flex items-center rounded-md">
@@ -123,7 +124,6 @@ const Stats = () => {
             />
           </View>
           <ImageBackground
-            // source = {{uri : "https:....."} url din bucketul de file uri de pe contabo}
             source={require(`../../assets/images/tournamentPic1.png`)}
             className="mt-8 shadow-xl shadow-orange-300/20 h-48 "
           >
@@ -140,7 +140,6 @@ const Stats = () => {
             {name} Statistics
           </Text>
           <View className="w-1/2 pt-1 rounded-full bg-orange-300 mt-3"></View>
-          <View className="mt-12 w-full bg-gray-500/10 p-12 rounded-md flex items-center justify-center"></View>
           <View className="flex items-center mt-4 justify-between gap-4 w-full flex-row">
             <View className="w-4/12 p-4 bg-gray-500/10 rounded-md items-center">
               <Text className="text-md text-white">Total Goals</Text>
@@ -150,7 +149,9 @@ const Stats = () => {
             </View>
             <View className="w-7/12 p-4 items-center bg-gray-500/10 rounded-md">
               <Text className="text-white ">
-                <Text className="font-semibold">{teamWithMostGoals} </Text>
+                <Text className="font-semibold">
+                  {numberOfGoals > 0 ? teamWithMostGoals : ""}{" "}
+                </Text>
               </Text>
               <View className="flex items-center mt-2 justify-center flex-row gap-2">
                 <Image
@@ -178,7 +179,7 @@ const Stats = () => {
           </View>
         </ScrollView>
       )}
-
+      {/* componenta pentru turneu */}
       {type === 2 && (
         <SectionList
           className="px-4"
@@ -200,7 +201,7 @@ const Stats = () => {
                 <View className="w-7/12 p-4 items-center bg-gray-500/10 rounded-md">
                   <Text className="text-white">
                     <Text className="font-semibold">
-                      {item.teamWithMostGoals}{" "}
+                      {item.numberOfGoals > 0 ? item.teamWithMostGoals : "-"}{" "}
                     </Text>
                   </Text>
                   <View className="flex items-center mt-2 justify-center flex-row gap-2">
@@ -262,7 +263,8 @@ const Stats = () => {
               </Text>
               <View className="w-1/2 pt-1 rounded-full bg-orange-300 mt-3"></View>
 
-              {selectedTournament.stats.finals &&
+              {selectedTournament.stats.finals.length > 0 &&
+                selectedTournament.stats.finals[0].result &&
                 selectedTournament.stats.finals[0].score && (
                   <>
                     <Text className="text-2xl mt-16 font-semibold  text-white">
@@ -285,34 +287,36 @@ const Stats = () => {
                     </View>
                   </>
                 )}
-              {selectedTournament.stats.semifinals && (
+              {selectedTournament.stats.semifinals.length > 0 && (
                 <View>
                   <Text className="text-2xl mt-16 font-semibold  text-white">
                     Semifinals
                   </Text>
                   {selectedTournament.stats.semifinals &&
-                    selectedTournament.stats.semifinals
-                      .sort((a, b) => a.points - b.points)
-                      .map((team, index) => (
-                        <View
-                          key={index}
-                          className="mt-4 w-full bg-gray-500/10 p-12 rounded-md flex items-center justify-center"
-                        >
-                          <Text className="text-white text-xl">
-                            <Text className="font-semibold text-2xl text-orange-300">
-                              {team.name}
-                            </Text>{" "}
-                            {team.points === 3 &&
-                              team.wins === 1 &&
-                              team.losses === 0 &&
-                              "qualified for the finals"}
-                            {team.points === 3 &&
-                              team.losses === 1 &&
-                              "made it third place"}
-                            {team.points === 0 && "made it fourth place"}
+                    selectedTournament.stats.semifinals.map((team, index) => (
+                      <View
+                        key={index}
+                        className="mt-4 w-full bg-gray-500/10 p-12 rounded-md flex items-center justify-center"
+                      >
+                        <View className="text-white text-xl flex flex-row items-center justify-between w-full">
+                          <Text className="font-semibold text-2xl text-orange-300">
+                            {team.name}
                           </Text>
+                          {team.points === 3 &&
+                            team.wins === 1 &&
+                            team.losses === 0 && (
+                              <Text className="font-semibold w-auto text-right text-green-300">
+                                Qualified for the finals
+                              </Text>
+                            )}
+                          {team.points === 0 && team.losses === 1 && (
+                            <Text className="font-semibold text-right text-red-500">
+                              Lost Semifinals
+                            </Text>
+                          )}
                         </View>
-                      ))}
+                      </View>
+                    ))}
                 </View>
               )}
             </>

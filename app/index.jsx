@@ -8,12 +8,36 @@ import { Link, router } from "expo-router";
 import { useTournament } from "./TournamentContextProvider";
 import { ImageBackground } from "expo-image";
 import { useEffect, useState } from "react";
+import { RefreshControl } from "react-native";
 
 const indexScreen = () => {
   const { setSelectedTournament } = useTournament();
   const [tournaments, setTournaments] = useState([]);
   const [championships, setChampionships] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
 
+  const onRefresh = () => {
+    setRefreshing(true);
+
+    fetch("http://localhost:3000/tournaments")
+      .then((response) => response.json())
+      .then((data) => {
+        setTournaments(data);
+        setRefreshing(false);
+      })
+      .catch(() => {
+        setRefreshing(false);
+      });
+    fetch("http://localhost:3000/championships")
+      .then((response) => response.json())
+      .then((data) => {
+        setChampionships(data);
+        setRefreshing(false);
+      })
+      .catch(() => {
+        setRefreshing(false);
+      });
+  };
   // functie de get pentru turnee si campionate
   useEffect(() => {
     fetch("http://localhost:3000/tournaments")
@@ -77,10 +101,10 @@ const indexScreen = () => {
             } else if (matchesArr[i].result == 0) {
               points += 1;
               draws += 1;
-            } else {
+            } else if (matchesArr[i].result == 2) {
               points = points;
               losses += 1;
-            }
+            } else points = points;
           }
           // cazul 2 in care echipa care a castigat este 2
           if (matchesArr[i].team2 === item) {
@@ -94,10 +118,10 @@ const indexScreen = () => {
             } else if (matchesArr[i].result == 0) {
               points += 1;
               draws += 1;
-            } else {
+            } else if (matchesArr[i].result == 1) {
               points = points;
               losses += 1;
-            }
+            } else points = points;
           }
         }
 
@@ -174,10 +198,10 @@ const indexScreen = () => {
                 } else if (group[i].result == 0) {
                   points += 1;
                   draws += 1;
-                } else {
+                } else if (group[i].result == 2) {
                   points = points;
                   losses += 1;
-                }
+                } else points = points;
               }
               // cazul 2 in care echipa care a castigat este 2
               if (group[i].team2 === team) {
@@ -187,15 +211,15 @@ const indexScreen = () => {
                 red_cards += group[i].cards_2.red;
 
                 if (group[i].result == 2) {
-                  points += 3;
                   wins += 1;
+                  points += 3;
                 } else if (group[i].result == 0) {
                   points += 1;
                   draws += 1;
-                } else {
+                } else if (group[i].result == 1) {
                   points = points;
                   losses += 1;
-                }
+                } else points = points;
               }
             }
           });
@@ -258,10 +282,10 @@ const indexScreen = () => {
               wins += 1;
             } else if (semifinals[i].result == 0) {
               points += 1;
-            } else {
+            } else if (semifinals[i].result == 2) {
               points = points;
               losses += 1;
-            }
+            } else points = points;
           }
           // cazul 2 in care echipa care a castigat este 2
           if (semifinals[i].team2 === item) {
@@ -274,10 +298,10 @@ const indexScreen = () => {
               wins += 1;
             } else if (semifinals[i].result == 0) {
               points += 1;
-            } else {
+            } else if (semifinals[i].result == 1) {
               points = points;
               losses += 1;
-            }
+            } else points = points;
           }
         }
 
@@ -314,6 +338,13 @@ const indexScreen = () => {
   return (
     <SafeAreaView className="h-screen flex-1 px-4 bg-gray-950">
       <FlatList
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor={"#FFA500"}
+          />
+        }
         data={eventsArr}
         keyExtractor={(item) => item._id.toString()}
         renderItem={(item) => {
